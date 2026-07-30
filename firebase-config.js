@@ -2,13 +2,14 @@
 // The Firebase config identifies the project; access is protected by
 // Authentication and Realtime Database Security Rules, not by hiding these values.
 export const firebaseConfig = {
-  apiKey: "PASTE_FIREBASE_API_KEY",
+  apiKey: "AIzaSyC5-Tpr4bvoL_uPRO9bSVl_ZkTvoRYEZAw",
   authDomain: "halloween-trick-or-trivia.firebaseapp.com",
   databaseURL: "https://halloween-trick-or-trivia-default-rtdb.firebaseio.com/",
   projectId: "halloween-trick-or-trivia",
   storageBucket: "halloween-trick-or-trivia.firebasestorage.app",
-  messagingSenderId: "PASTE_MESSAGING_SENDER_ID",
-  appId: "PASTE_FIREBASE_APP_ID"
+  messagingSenderId: "908447343528",
+  appId: "1:908447343528:web:4f5b1c862878ff5dea739d",
+  measurementId: "G-J9TW00DKGD"
 };
 
 export const DEFAULT_ROOM_CODE = "CARL26";
