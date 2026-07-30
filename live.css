@@ -1,0 +1,46 @@
+/* Live Firebase connection states */
+.connection-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 11px;
+  font-family: "Barlow Condensed", Impact, sans-serif;
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.connection-badge span { font-size: .72rem; }
+.connection-badge.setup { color: var(--gold); border-color: rgba(246,196,83,.6); background: rgba(246,196,83,.07); }
+.connection-badge.connecting { color: var(--orange2); border-color: rgba(244,123,32,.65); background: rgba(244,123,32,.08); }
+.connection-badge.live { color: var(--green); border-color: rgba(156,255,87,.65); background: rgba(36,70,21,.35); }
+.connection-badge.offline { color: #ff8992; border-color: rgba(226,74,85,.65); background: rgba(99,27,33,.34); }
+
+.setup-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-bottom: 16px;
+  border: 1px dashed rgba(246,196,83,.6);
+  border-radius: 14px;
+  padding: 11px 14px;
+  color: var(--gold);
+  background: rgba(246,196,83,.06);
+}
+.setup-notice span { color: var(--muted); }
+.setup-notice code { color: var(--text); }
+.host-access { display: grid; justify-items: end; gap: 8px; }
+.host-connection-help { margin: 11px 0 0; color: #93879e; font-size: .82rem; }
+.answer-count { margin: 14px 0 0; color: var(--gold); font-family: "Barlow Condensed", Impact, sans-serif; font-weight: 800; letter-spacing: .04em; }
+.live-locked { opacity: .58; cursor: not-allowed !important; }
+
+@media (max-width: 760px) {
+  .connection-badge { width: 100%; justify-content: center; }
+  .host-access { width: 100%; justify-items: stretch; }
+  .host-access .host-badge { text-align: center; }
+}
