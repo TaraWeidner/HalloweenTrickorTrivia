@@ -3,10 +3,10 @@
 // Authentication and Realtime Database Security Rules, not by hiding these values.
 export const firebaseConfig = {
   apiKey: "PASTE_FIREBASE_API_KEY",
-  authDomain: "PASTE_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://PASTE_DATABASE_NAME.REGION.firebasedatabase.app",
-  projectId: "PASTE_PROJECT_ID",
-  storageBucket: "PASTE_PROJECT_ID.firebasestorage.app",
+  authDomain: "halloween-trick-or-trivia.firebaseapp.com",
+  databaseURL: "https://halloween-trick-or-trivia-default-rtdb.firebaseio.com/",
+  projectId: "halloween-trick-or-trivia",
+  storageBucket: "halloween-trick-or-trivia.firebasestorage.app",
   messagingSenderId: "PASTE_MESSAGING_SENDER_ID",
   appId: "PASTE_FIREBASE_APP_ID"
 };
