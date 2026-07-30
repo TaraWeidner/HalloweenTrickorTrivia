@@ -65,3 +65,11 @@ export const bonusQuestions = [
   { category: 'Dungeon Crawler Carl', value: 1000, text: 'Which corporation operates the Earth crawl at the beginning of the series?', choices: ['Borant Corporation','Valtay Corporation','Open Intellect','The Plenty'], answer: 'Borant Corporation', fact: 'Borant operates and broadcasts Dungeon World: Earth.' },
   { category: 'Dungeon Crawler Carl', value: 1000, text: 'What was Mordecai’s original race?', choices: ['Skyfowl','Bopca','Primal','Cretin'], answer: 'Skyfowl', fact: 'Mordecai is originally a Skyfowl, though his appearance changes throughout the crawl.' }
 ];
+
+// Keep the original single-question export available for the base engine.
+export const bonus = bonusQuestions[0];
+
+// Load targeted multiplayer fixes after the base engine has initialized.
+window.setTimeout(() => {
+  import('./live-fixes.js').catch(error => console.error('Live fixes failed to load:', error));
+}, 0);
