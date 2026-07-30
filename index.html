@@ -3,80 +3,146 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Trick or Trivia 2026 — Prototype</title>
+  <meta name="theme-color" content="#0f0b14" />
+  <title>Trick or Trivia 2026 — A Haunted Game Show</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Creepster&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="ambient ambient-left" aria-hidden="true"></div>
+  <div class="ambient ambient-right" aria-hidden="true"></div>
+
   <main class="app">
-    <header class="panel topbar">
-      <div>
-        <p class="eyebrow">Phase 1 Working Prototype</p>
-        <h1>Trick or Trivia 2026</h1>
-        <p class="muted">A live porch game show for solo survivors and adventuring parties.</p>
+    <header class="topbar">
+      <div class="prototype-mark">
+        <span class="prototype-icon" aria-hidden="true">☾</span>
+        <div>
+          <p class="eyebrow">Game-Night Prototype</p>
+          <p class="prototype-title">Trick or Trivia 2026</p>
+        </div>
       </div>
       <nav class="view-switcher" aria-label="Prototype screens">
         <button class="view-button active" data-view="display">Porch Display</button>
         <button class="view-button" data-view="host">Host Controls</button>
-        <button class="view-button" data-view="join">Player Join</button>
+        <button class="view-button" data-view="join">Player View</button>
       </nav>
     </header>
 
     <section id="display" class="screen active">
-      <div class="panel hero">
-        <div>
-          <span id="statusBadge" class="status">The Dungeon Is Open</span>
-          <h2 style="margin-top:14px">Scan. Join. Choose your doom.</h2>
-          <p class="muted">Room code</p>
-          <p id="displayRoomCode" class="join-code">CARL26</p>
-          <div id="addressBanner" class="address-banner">
-            <strong id="displayAddress">Event address hidden until game night</strong>
-            <span id="displayHours" class="entry-meta">Open 5:00–9:00 PM</span>
+      <section class="showcase" aria-labelledby="gameTitle">
+        <div class="marquee-bulbs top" aria-hidden="true"></div>
+        <div class="marquee-bulbs bottom" aria-hidden="true"></div>
+        <div class="showcase-copy">
+          <div class="status-line">
+            <span id="statusBadge" class="status"><span class="status-dot" aria-hidden="true"></span>The Dungeon Is Open</span>
+            <span class="year-ticket">Halloween 2026</span>
+          </div>
+          <p class="show-kicker">A Haunted Game Show</p>
+          <h1 id="gameTitle">Trick <span>or</span> Trivia</h1>
+          <p class="doom-line">Choose Your Doom</p>
+          <p class="show-description">Solo survivors and adventuring parties welcome. New players may materialize at any time.</p>
+
+          <div class="join-details">
+            <div class="room-panel">
+              <span class="detail-label">Join with room code</span>
+              <strong id="displayRoomCode" class="join-code">CARL26</strong>
+            </div>
+            <div class="invite-copy">
+              <strong id="inviteHeadline">Scan. Join. Answer if you dare.</strong>
+              <span id="displayHours">Open 5:00–9:00 PM</span>
+            </div>
           </div>
         </div>
-        <div>
-          <div class="qr-placeholder" aria-label="Placeholder for game QR code"></div>
-          <p class="muted" style="text-align:center;margin:9px 0 0;font-size:.76rem">QR placeholder</p>
+
+        <div class="qr-stage">
+          <div class="qr-frame">
+            <div class="qr-placeholder" aria-label="Placeholder for game QR code"></div>
+          </div>
+          <p class="qr-title">Summon Your Entry</p>
+          <p class="qr-note">QR code awakens when the live site is published.</p>
         </div>
-      </div>
+
+        <div id="addressBanner" class="address-banner">
+          <span class="address-icon" aria-hidden="true">✦</span>
+          <div>
+            <span class="detail-label">Invite more brave souls</span>
+            <strong id="displayAddress">Share the room code with nearby friends.</strong>
+          </div>
+        </div>
+      </section>
 
       <div class="layout">
-        <section class="panel board-wrap">
+        <section class="board-panel">
           <div class="board-header">
             <div>
-              <h2>Choose a Question</h2>
-              <p class="muted">Treat · Trick · Terror · Nightmare · Final Girl</p>
+              <p class="eyebrow">The Main Event</p>
+              <h2>Pick a Category. Choose Your Fate.</h2>
             </div>
-            <button class="button secondary" id="displayBonus">Unlock Bonus Floor</button>
+            <button class="button system-button" id="displayBonus"><span aria-hidden="true">⚠</span> Unlock Bonus Floor</button>
           </div>
+
+          <div class="difficulty-legend" aria-label="Question difficulty levels">
+            <span class="legend-item treat">Treat <b>100</b></span>
+            <span class="legend-item trick">Trick <b>200</b></span>
+            <span class="legend-item terror">Terror <b>300</b></span>
+            <span class="legend-item nightmare">Nightmare <b>400</b></span>
+            <span class="legend-item final-girl">Final Girl <b>500</b></span>
+          </div>
+
           <div id="board" class="board"></div>
         </section>
 
-        <aside class="panel sidebar">
-          <p class="eyebrow">Round <span id="roundNumber">1</span></p>
-          <h2>Leaderboard</h2>
+        <aside class="leaderboard-panel">
+          <div class="leaderboard-heading">
+            <span class="round-medallion">R<span id="roundNumber">1</span></span>
+            <div>
+              <p class="eyebrow">Live Rankings</p>
+              <h2>Tonight’s Survivors</h2>
+            </div>
+          </div>
           <ol id="leaderboard" class="leaderboard"></ol>
-          <p id="emptyLeaderboard" class="muted">No brave souls have joined yet.</p>
+          <p id="emptyLeaderboard" class="empty-state">No brave souls have joined the séance yet.</p>
+          <div class="leaderboard-footer">
+            <span>Solo + team play</span>
+            <span>Late joining welcome</span>
+          </div>
         </aside>
       </div>
     </section>
 
     <section id="host" class="screen">
+      <section class="view-intro host-intro">
+        <div>
+          <p class="eyebrow">Backstage Access</p>
+          <h1 class="section-title">Quizmaster Control Booth</h1>
+          <p>Run the show, protect the address, and decide which contestants survive the scoreboard.</p>
+        </div>
+        <div class="host-badge">Quizmaster Tara</div>
+      </section>
+
       <div class="host-grid">
-        <section class="panel host-card">
-          <p class="eyebrow">Privacy & Event Status</p>
-          <h2>Public Display Controls</h2>
+        <section class="control-card privacy-card">
+          <div class="card-heading">
+            <span class="card-icon" aria-hidden="true">⌂</span>
+            <div>
+              <p class="eyebrow">Privacy & Event Status</p>
+              <h2>Public Display Controls</h2>
+            </div>
+          </div>
 
           <div class="switch-row">
-            <span>Dungeon is open</span>
-            <input id="eventOpen" type="checkbox" checked aria-label="Dungeon is open" />
+            <div><strong>Dungeon is open</strong><span>Controls the public event status.</span></div>
+            <label class="toggle"><input id="eventOpen" type="checkbox" checked aria-label="Dungeon is open" /><span></span></label>
           </div>
           <div class="switch-row">
-            <span>Show event address</span>
-            <input id="showAddress" type="checkbox" aria-label="Show event address" />
+            <div><strong>Show event address</strong><span>Off by default. Enable only during event hours.</span></div>
+            <label class="toggle"><input id="showAddress" type="checkbox" aria-label="Show event address" /><span></span></label>
           </div>
 
           <label>Event address
-            <input id="addressInput" type="text" placeholder="Enter only when ready for game night" />
+            <input id="addressInput" type="text" autocomplete="off" placeholder="Enter only when ready for game night" />
           </label>
           <label>Event hours
             <input id="hoursInput" type="text" value="Open 5:00–9:00 PM" />
@@ -85,60 +151,85 @@
             <input id="roomCodeInput" type="text" value="CARL26" maxlength="8" />
           </label>
 
-          <p id="privacyStatus" class="feedback">Address hidden from public screens.</p>
+          <p id="privacyStatus" class="privacy-status"><span aria-hidden="true">●</span> Address hidden from public screens.</p>
         </section>
 
-        <section class="panel host-card">
-          <p class="eyebrow">Quizmaster Tara</p>
-          <h2>Game Controls</h2>
-          <div class="stack">
-            <button class="button primary" id="newRound">Start New Round</button>
-            <button class="button secondary" id="hostBonus">Launch DCC Bonus Floor</button>
-            <button class="button" id="resetBoard">Reset Question Board</button>
-            <button class="button" id="clearPlayers">Clear Test Players</button>
+        <section class="control-card game-controls-card">
+          <div class="card-heading">
+            <span class="card-icon" aria-hidden="true">★</span>
+            <div>
+              <p class="eyebrow">Show Controls</p>
+              <h2>Command the Haunting</h2>
+            </div>
           </div>
-          <p class="muted" style="margin-top:14px">Select a player below before awarding points.</p>
+          <div class="stack">
+            <button class="button primary" id="newRound">Start a Fresh Round</button>
+            <button class="button system-button" id="hostBonus">Launch DCC Bonus Floor</button>
+            <button class="button secondary" id="resetBoard">Restore Question Board</button>
+            <button class="button quiet" id="clearPlayers">Clear Test Players</button>
+          </div>
+          <div class="host-tip">
+            <strong>Scoring tip</strong>
+            <span>Select a player or team below before awarding points.</span>
+          </div>
         </section>
       </div>
 
-      <section class="panel host-card" style="margin-top:16px">
-        <p class="eyebrow">Live Entries</p>
-        <h2>Players & Teams</h2>
+      <section class="control-card players-control-card">
+        <div class="card-heading split-heading">
+          <div>
+            <p class="eyebrow">Live Entries</p>
+            <h2>Contestants & Adventuring Parties</h2>
+          </div>
+          <span class="small-ticket">Click an entry to select it</span>
+        </div>
         <div id="hostPlayers" class="players-grid"></div>
-        <p id="hostPlayersEmpty" class="muted">No entries yet. Use Player Join to add a test player or team.</p>
+        <p id="hostPlayersEmpty" class="empty-state">No entries yet. Open Player View to summon a test contestant.</p>
       </section>
     </section>
 
     <section id="join" class="screen">
+      <section class="view-intro join-intro">
+        <div>
+          <p class="eyebrow">Audience Entrance</p>
+          <h1 class="section-title">Step Into the Spotlight</h1>
+          <p>Enter alone or bring your favorite collection of charming weirdos. Everyone shares one glorious leaderboard.</p>
+        </div>
+        <span class="join-moon" aria-hidden="true">☾</span>
+      </section>
+
       <div class="join-grid">
-        <section class="panel join-card">
-          <p class="eyebrow">Enter the Dungeon</p>
-          <h2>Join Trick or Trivia</h2>
-          <p class="muted">Solo players and teams share one glorious leaderboard.</p>
+        <section class="join-card entry-card">
+          <p class="eyebrow">Choose Your Form</p>
+          <h2>Summon Your Entry</h2>
 
           <div class="mode-choice">
-            <label><input type="radio" name="entryType" value="solo" checked />Solo Survivor</label>
-            <label><input type="radio" name="entryType" value="team" />Team of Adventurers</label>
+            <label><input type="radio" name="entryType" value="solo" checked /><span class="mode-symbol" aria-hidden="true">◆</span><strong>Solo Survivor</strong><small>One brave soul, one phone.</small></label>
+            <label><input type="radio" name="entryType" value="team" /><span class="mode-symbol" aria-hidden="true">◆◆</span><strong>Adventuring Party</strong><small>Family or friends, one shared device.</small></label>
           </div>
 
           <label><span id="nameLabel">Player name</span>
-            <input id="entryName" type="text" placeholder="Example: Pumpkin King" />
+            <input id="entryName" type="text" maxlength="28" placeholder="Example: Pumpkin King" />
           </label>
           <label id="teamSizeLabel" class="hidden">Team size
             <input id="teamSize" type="number" min="2" max="12" value="2" />
           </label>
-          <button class="button primary" id="joinGame" style="width:100%;margin-top:16px">Join Game</button>
+          <button class="button primary join-button" id="joinGame">Enter the Game</button>
           <p id="joinFeedback" class="feedback" aria-live="polite"></p>
         </section>
 
-        <section class="panel join-card">
+        <section class="join-card entry-status-card">
           <p class="eyebrow">Your Entry</p>
-          <h2 id="joinedName">Not joined yet</h2>
-          <div class="players-grid" style="grid-template-columns:1fr 1fr">
-            <div class="player-card"><span class="entry-meta">Round score</span><strong id="joinedRound">0</strong></div>
-            <div class="player-card"><span class="entry-meta">Night score</span><strong id="joinedTotal">0</strong></div>
+          <h2 id="joinedName">Not summoned yet</h2>
+          <p class="entry-status-copy">When the host launches a question, answer choices will appear here in the synchronized version.</p>
+          <div class="score-grid">
+            <div class="score-card"><span>Round score</span><strong id="joinedRound">0</strong></div>
+            <div class="score-card"><span>Night score</span><strong id="joinedTotal">0</strong></div>
           </div>
-          <p class="muted" style="margin-top:14px">This browser prototype simulates multiple entries locally. The production version will synchronize every phone and the porch display through Firebase.</p>
+          <div class="waiting-card">
+            <span class="waiting-eye" aria-hidden="true">◉</span>
+            <div><strong>The spirits are standing by.</strong><span>New players can join between any questions.</span></div>
+          </div>
         </section>
       </div>
     </section>
@@ -146,32 +237,34 @@
 
   <dialog id="questionDialog">
     <div class="dialog-content">
+      <div id="systemBanner" class="system-banner hidden">SYSTEM OVERRIDE — BONUS FLOOR UNLOCKED</div>
       <div class="question-top">
-        <div>
-          <p id="questionCategory" class="eyebrow">Category</p>
-          <p id="questionValue" class="muted">100 points</p>
+        <div class="question-meta">
+          <p id="questionCategory" class="category-badge">Category</p>
+          <p id="questionValue" class="value-badge">100 points</p>
         </div>
-        <div style="text-align:right">
-          <span class="entry-meta">Time remaining</span>
-          <span id="timer" class="timer">30</span>
+        <div id="timerWrap" class="timer-wrap">
+          <span>Time remaining</span>
+          <strong id="timer" class="timer">30</strong>
         </div>
       </div>
 
-      <h2 id="questionText" style="margin-top:18px"></h2>
+      <p class="question-kicker">Answer If You Dare</p>
+      <h2 id="questionText" class="question-text"></h2>
       <div id="answers" class="answers"></div>
 
       <div id="answerReveal" class="reveal hidden">
-        <span class="entry-meta">Correct answer</span>
+        <span class="reveal-label">The spirits reveal</span>
         <strong id="correctAnswer"></strong>
-        <p id="answerFact" class="muted" style="margin:6px 0 0"></p>
+        <p id="answerFact"></p>
       </div>
 
       <div class="dialog-actions">
-        <button class="button primary" id="revealAnswer">Reveal Answer</button>
-        <button class="button secondary hidden" id="awardPoints">Award Points</button>
-        <button class="button" id="returnBoard">Return to Board</button>
+        <button class="button primary" id="revealAnswer">Reveal the Truth</button>
+        <button class="button success hidden" id="awardPoints">Award Points</button>
+        <button class="button quiet" id="returnBoard">Return to the Board</button>
       </div>
-      <p id="questionFeedback" class="feedback" aria-live="polite"></p>
+      <p id="questionFeedback" class="feedback question-feedback" aria-live="polite"></p>
     </div>
   </dialog>
 
