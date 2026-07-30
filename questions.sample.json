@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "difficultyLabels": ["Treat", "Trick", "Terror", "Nightmare", "Final Girl"],
+  "sampleQuestion": {
+    "id": "slashers-100-001",
+    "category": "Slashers",
+    "difficulty": 1,
+    "points": 100,
+    "prompt": "Which masked killer stalks Haddonfield?",
+    "choices": ["Michael Myers", "Jason Voorhees", "Ghostface", "Leatherface"],
+    "correctAnswer": "Michael Myers",
+    "acceptedAnswers": ["Michael Myers", "The Shape"],
+    "explanation": "The Shape first appeared in John Carpenter's Halloween.",
+    "tags": ["movies", "slashers", "classic"],
+    "spoilerLevel": "none"
+  },
+  "bonusQuestion": {
+    "id": "dcc-bonus-001",
+    "category": "Dungeon Crawler Carl",
+    "difficulty": 3,
+    "points": 1000,
+    "prompt": "What is the name of Princess Donut's dinosaur companion?",
+    "choices": ["Mongo", "Gravy Boat", "Ferdinand", "Kiwi"],
+    "correctAnswer": "Mongo",
+    "acceptedAnswers": ["Mongo"],
+    "explanation": "Mongo is appalled that anyone might miss this question.",
+    "tags": ["dcc", "bonus-floor"],
+    "spoilerLevel": "introductory"
+  }
+}
