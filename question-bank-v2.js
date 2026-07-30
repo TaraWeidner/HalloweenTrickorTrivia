@@ -3,6 +3,10 @@ import { generalCategoriesB } from "./bank-general-b.js";
 import { bookTitles, dccTiers } from "./bank-dcc.js";
 
 const generalCategoryGroups = [generalCategoriesA, generalCategoriesB];
+const dccBoardTiers = [dccTiers[0], dccTiers[1], dccTiers[2], dccTiers[3], [...dccTiers[4], ...dccTiers[5]]];
+const dccBonusPool = Array.from({ length: Math.max(...dccTiers.map(tier => tier.length)) }, (_, questionIndex) =>
+  dccTiers.map(tier => tier[questionIndex]).filter(Boolean)
+).flat();
 
 function displayedRound() {
   const value = Number(document.getElementById("roundNumber")?.textContent || 1);
@@ -44,7 +48,7 @@ function buildCategory(category, round) {
 function buildDccCategory(round) {
   return {
     name: "Dungeon Crawler Carl",
-    questions: dccTiers.slice(0, 5).map((tier, tierIndex) => {
+    questions: dccBoardTiers.map((tier, tierIndex) => {
       const index = (hashSeed("dcc", tierIndex) + Math.max(1, round) - 1) % tier.length;
       return questionTuple(tier[index]);
     })
@@ -67,7 +71,7 @@ export const categories = new Proxy([], {
   }
 });
 
-export const bonusQuestions = dccTiers.flat().slice(0, 21).map((question, index) => {
+export const bonusQuestions = dccBonusPool.slice(0, 21).map((question, index) => {
   const tuple = questionTuple(question);
   return { category: "Dungeon Crawler Carl", value: 1000, text: tuple[0], choices: tuple[1], answer: tuple[2], fact: tuple[3], bankIndex: index };
 });
