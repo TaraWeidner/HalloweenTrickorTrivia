@@ -31,10 +31,11 @@ function questionTuple(question) {
 }
 
 function buildCategory(category, round) {
+  const groupCycle = Math.floor((Math.max(1, round) - 1) / generalCategoryGroups.length);
   return {
     name: category.name,
     questions: category.tiers.map((tier, tierIndex) => {
-      const index = hashSeed(round, category.name, tierIndex) % tier.length;
+      const index = (hashSeed(category.name, tierIndex) + groupCycle) % tier.length;
       return questionTuple(tier[index]);
     })
   };
@@ -44,7 +45,7 @@ function buildDccCategory(round) {
   return {
     name: "Dungeon Crawler Carl",
     questions: dccTiers.slice(0, 5).map((tier, tierIndex) => {
-      const index = hashSeed("dcc", round, tierIndex) % tier.length;
+      const index = (hashSeed("dcc", tierIndex) + Math.max(1, round) - 1) % tier.length;
       return questionTuple(tier[index]);
     })
   };
@@ -66,7 +67,7 @@ export const categories = new Proxy([], {
   }
 });
 
-export const bonusQuestions = dccTiers.flat().map((question, index) => {
+export const bonusQuestions = dccTiers.flat().slice(0, 21).map((question, index) => {
   const tuple = questionTuple(question);
   return { category: "Dungeon Crawler Carl", value: 1000, text: tuple[0], choices: tuple[1], answer: tuple[2], fact: tuple[3], bankIndex: index };
 });
