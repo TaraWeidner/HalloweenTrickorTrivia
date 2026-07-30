@@ -1,3 +1,4 @@
+# One-time maintenance workflow; remove after successful patch.
 name: Fix rounds and DCC bonus rotation
 
 on:
