@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Creepster&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="live.css" />
 </head>
 <body>
   <div class="ambient ambient-left" aria-hidden="true"></div>
@@ -28,7 +29,13 @@
         <button class="view-button" data-view="host">Host Controls</button>
         <button class="view-button" data-view="join">Player View</button>
       </nav>
+      <div id="connectionBadge" class="connection-badge setup"><span aria-hidden="true">●</span> Firebase setup needed</div>
     </header>
+
+    <section id="firebaseSetupNotice" class="setup-notice">
+      <strong>Live synchronization is ready for configuration.</strong>
+      <span>Connect the Firebase project using <code>firebase-config.js</code>, then refresh this page.</span>
+    </section>
 
     <section id="display" class="screen active">
       <section class="showcase" aria-labelledby="gameTitle">
@@ -119,7 +126,11 @@
           <h1 class="section-title">Quizmaster Control Booth</h1>
           <p>Run the show, protect the address, and decide which contestants survive the scoreboard.</p>
         </div>
-        <div class="host-badge">Quizmaster Tara</div>
+        <div class="host-access">
+          <span id="hostRoleBadge" class="host-badge">Host access not claimed</span>
+          <button id="claimHost" class="button primary">Claim Host Controls</button>
+          <button id="releaseHost" class="button quiet hidden">Release Host</button>
+        </div>
       </section>
 
       <div class="host-grid">
@@ -152,6 +163,7 @@
           </label>
 
           <p id="privacyStatus" class="privacy-status"><span aria-hidden="true">●</span> Address hidden from public screens.</p>
+          <p id="hostConnectionHelp" class="host-connection-help">Claim host access before changing live settings.</p>
         </section>
 
         <section class="control-card game-controls-card">
@@ -169,8 +181,8 @@
             <button class="button quiet" id="clearPlayers">Clear Test Players</button>
           </div>
           <div class="host-tip">
-            <strong>Scoring tip</strong>
-            <span>Select a player or team below before awarding points.</span>
+            <strong>Live scoring</strong>
+            <span>After revealing, score all correct entries at once.</span>
           </div>
         </section>
       </div>
@@ -181,7 +193,7 @@
             <p class="eyebrow">Live Entries</p>
             <h2>Contestants & Adventuring Parties</h2>
           </div>
-          <span class="small-ticket">Click an entry to select it</span>
+          <span class="small-ticket">Live scores update automatically</span>
         </div>
         <div id="hostPlayers" class="players-grid"></div>
         <p id="hostPlayersEmpty" class="empty-state">No entries yet. Open Player View to summon a test contestant.</p>
@@ -221,14 +233,14 @@
         <section class="join-card entry-status-card">
           <p class="eyebrow">Your Entry</p>
           <h2 id="joinedName">Not summoned yet</h2>
-          <p class="entry-status-copy">When the host launches a question, answer choices will appear here in the synchronized version.</p>
+          <p class="entry-status-copy">Questions launched by the host will appear here automatically.</p>
           <div class="score-grid">
             <div class="score-card"><span>Round score</span><strong id="joinedRound">0</strong></div>
             <div class="score-card"><span>Night score</span><strong id="joinedTotal">0</strong></div>
           </div>
           <div class="waiting-card">
             <span class="waiting-eye" aria-hidden="true">◉</span>
-            <div><strong>The spirits are standing by.</strong><span>New players can join between any questions.</span></div>
+            <div><strong id="playerLiveHeadline">The spirits are standing by.</strong><span id="playerLiveStatus">New players can join between any questions.</span></div>
           </div>
         </section>
       </div>
@@ -259,6 +271,7 @@
         <p id="answerFact"></p>
       </div>
 
+      <p id="answerCount" class="answer-count hidden"></p>
       <div class="dialog-actions">
         <button class="button primary" id="revealAnswer">Reveal the Truth</button>
         <button class="button success hidden" id="awardPoints">Award Points</button>
@@ -268,7 +281,6 @@
     </div>
   </dialog>
 
-  <script src="questions.js"></script>
-  <script src="app.js"></script>
+  <script type="module" src="app-live.js"></script>
 </body>
 </html>
