@@ -1,2 +1,2 @@
 import "./live-fixes-v2.js";
-import "./player-notice.js";
+import "./guest-flow.js";
