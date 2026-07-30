@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trick or Trivia 2026 — Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="panel topbar">
+      <div>
+        <p class="eyebrow">Phase 1 Working Prototype</p>
+        <h1>Trick or Trivia 2026</h1>
+        <p class="muted">A live porch game show for solo survivors and adventuring parties.</p>
+      </div>
+      <nav class="view-switcher" aria-label="Prototype screens">
+        <button class="view-button active" data-view="display">Porch Display</button>
+        <button class="view-button" data-view="host">Host Controls</button>
+        <button class="view-button" data-view="join">Player Join</button>
+      </nav>
+    </header>
+
+    <section id="display" class="screen active">
+      <div class="panel hero">
+        <div>
+          <span id="statusBadge" class="status">The Dungeon Is Open</span>
+          <h2 style="margin-top:14px">Scan. Join. Choose your doom.</h2>
+          <p class="muted">Room code</p>
+          <p id="displayRoomCode" class="join-code">CARL26</p>
+          <div id="addressBanner" class="address-banner">
+            <strong id="displayAddress">Event address hidden until game night</strong>
+            <span id="displayHours" class="entry-meta">Open 5:00–9:00 PM</span>
+          </div>
+        </div>
+        <div>
+          <div class="qr-placeholder" aria-label="Placeholder for game QR code"></div>
+          <p class="muted" style="text-align:center;margin:9px 0 0;font-size:.76rem">QR placeholder</p>
+        </div>
+      </div>
+
+      <div class="layout">
+        <section class="panel board-wrap">
+          <div class="board-header">
+            <div>
+              <h2>Choose a Question</h2>
+              <p class="muted">Treat · Trick · Terror · Nightmare · Final Girl</p>
+            </div>
+            <button class="button secondary" id="displayBonus">Unlock Bonus Floor</button>
+          </div>
+          <div id="board" class="board"></div>
+        </section>
+
+        <aside class="panel sidebar">
+          <p class="eyebrow">Round <span id="roundNumber">1</span></p>
+          <h2>Leaderboard</h2>
+          <ol id="leaderboard" class="leaderboard"></ol>
+          <p id="emptyLeaderboard" class="muted">No brave souls have joined yet.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="host" class="screen">
+      <div class="host-grid">
+        <section class="panel host-card">
+          <p class="eyebrow">Privacy & Event Status</p>
+          <h2>Public Display Controls</h2>
+
+          <div class="switch-row">
+            <span>Dungeon is open</span>
+            <input id="eventOpen" type="checkbox" checked aria-label="Dungeon is open" />
+          </div>
+          <div class="switch-row">
+            <span>Show event address</span>
+            <input id="showAddress" type="checkbox" aria-label="Show event address" />
+          </div>
+
+          <label>Event address
+            <input id="addressInput" type="text" placeholder="Enter only when ready for game night" />
+          </label>
+          <label>Event hours
+            <input id="hoursInput" type="text" value="Open 5:00–9:00 PM" />
+          </label>
+          <label>Room code
+            <input id="roomCodeInput" type="text" value="CARL26" maxlength="8" />
+          </label>
+
+          <p id="privacyStatus" class="feedback">Address hidden from public screens.</p>
+        </section>
+
+        <section class="panel host-card">
+          <p class="eyebrow">Quizmaster Tara</p>
+          <h2>Game Controls</h2>
+          <div class="stack">
+            <button class="button primary" id="newRound">Start New Round</button>
+            <button class="button secondary" id="hostBonus">Launch DCC Bonus Floor</button>
+            <button class="button" id="resetBoard">Reset Question Board</button>
+            <button class="button" id="clearPlayers">Clear Test Players</button>
+          </div>
+          <p class="muted" style="margin-top:14px">Select a player below before awarding points.</p>
+        </section>
+      </div>
+
+      <section class="panel host-card" style="margin-top:16px">
+        <p class="eyebrow">Live Entries</p>
+        <h2>Players & Teams</h2>
+        <div id="hostPlayers" class="players-grid"></div>
+        <p id="hostPlayersEmpty" class="muted">No entries yet. Use Player Join to add a test player or team.</p>
+      </section>
+    </section>
+
+    <section id="join" class="screen">
+      <div class="join-grid">
+        <section class="panel join-card">
+          <p class="eyebrow">Enter the Dungeon</p>
+          <h2>Join Trick or Trivia</h2>
+          <p class="muted">Solo players and teams share one glorious leaderboard.</p>
+
+          <div class="mode-choice">
+            <label><input type="radio" name="entryType" value="solo" checked />Solo Survivor</label>
+            <label><input type="radio" name="entryType" value="team" />Team of Adventurers</label>
+          </div>
+
+          <label><span id="nameLabel">Player name</span>
+            <input id="entryName" type="text" placeholder="Example: Pumpkin King" />
+          </label>
+          <label id="teamSizeLabel" class="hidden">Team size
+            <input id="teamSize" type="number" min="2" max="12" value="2" />
+          </label>
+          <button class="button primary" id="joinGame" style="width:100%;margin-top:16px">Join Game</button>
+          <p id="joinFeedback" class="feedback" aria-live="polite"></p>
+        </section>
+
+        <section class="panel join-card">
+          <p class="eyebrow">Your Entry</p>
+          <h2 id="joinedName">Not joined yet</h2>
+          <div class="players-grid" style="grid-template-columns:1fr 1fr">
+            <div class="player-card"><span class="entry-meta">Round score</span><strong id="joinedRound">0</strong></div>
+            <div class="player-card"><span class="entry-meta">Night score</span><strong id="joinedTotal">0</strong></div>
+          </div>
+          <p class="muted" style="margin-top:14px">This browser prototype simulates multiple entries locally. The production version will synchronize every phone and the porch display through Firebase.</p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="questionDialog">
+    <div class="dialog-content">
+      <div class="question-top">
+        <div>
+          <p id="questionCategory" class="eyebrow">Category</p>
+          <p id="questionValue" class="muted">100 points</p>
+        </div>
+        <div style="text-align:right">
+          <span class="entry-meta">Time remaining</span>
+          <span id="timer" class="timer">30</span>
+        </div>
+      </div>
+
+      <h2 id="questionText" style="margin-top:18px"></h2>
+      <div id="answers" class="answers"></div>
+
+      <div id="answerReveal" class="reveal hidden">
+        <span class="entry-meta">Correct answer</span>
+        <strong id="correctAnswer"></strong>
+        <p id="answerFact" class="muted" style="margin:6px 0 0"></p>
+      </div>
+
+      <div class="dialog-actions">
+        <button class="button primary" id="revealAnswer">Reveal Answer</button>
+        <button class="button secondary hidden" id="awardPoints">Award Points</button>
+        <button class="button" id="returnBoard">Return to Board</button>
+      </div>
+      <p id="questionFeedback" class="feedback" aria-live="polite"></p>
+    </div>
+  </dialog>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
