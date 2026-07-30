@@ -12,7 +12,7 @@ function addDesperadoClubNotice() {
     <div>
       <p class="desperado-kicker">Desperado Club Rules</p>
       <h2>The Porch Controls the Board</h2>
-      <p>The player standing at the porch chooses the category and point value for everyone. Want to call the shot? Visit the porch and join the <strong>Desperado Club</strong>.</p>
+      <p>The player standing at the porch chooses the category and point value for everyone. Want to call the shot? Find your way to <strong>The Desperado Club</strong>.</p>
     </div>
   `;
 
