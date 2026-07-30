@@ -1,8 +1,10 @@
 function addDesperadoClubNotice() {
-  const playerView = document.getElementById("join");
-  const intro = playerView?.querySelector(".join-intro");
+  if (document.body.classList.contains("host-portal-experience")) return;
 
-  if (!playerView || !intro || document.getElementById("desperadoClubNotice")) return;
+  const displayView = document.getElementById("display");
+  const layout = displayView?.querySelector(".layout");
+
+  if (!displayView || !layout || document.getElementById("desperadoClubNotice")) return;
 
   const notice = document.createElement("aside");
   notice.id = "desperadoClubNotice";
@@ -71,8 +73,10 @@ function addDesperadoClubNotice() {
     lineHeight: "1.45"
   });
 
-  copy.querySelector("strong").style.color = "#ffad4d";
-  intro.insertAdjacentElement("afterend", notice);
+  const strong = copy.querySelector("strong");
+  if (strong) strong.style.color = "#ffad4d";
+
+  layout.insertAdjacentElement("beforebegin", notice);
 }
 
 if (document.readyState === "loading") {
