@@ -1,50 +1,53 @@
 # Trick or Trivia 2026
 
-A live, porch-sized Halloween trivia game built for a four-hour drop-in event. Guests can play solo or as a team, choose questions from a shared game board, and compete across regular rounds and Dungeon Crawler Carl bonus floors.
+## 🎃 Open the live haunted game
 
-## Current version: Phase 1 prototype
+**[Launch Trick or Trivia](https://taraweidner.github.io/HalloweenTrickorTrivia/)**
 
-The current browser prototype includes:
+Use the GitHub Pages link above for the actual game. The Firebase `.web.app` / `.firebaseapp.com` page is not the game frontend; Firebase is used behind the scenes for authentication and live synchronization.
 
-- Porch display, host controls, and player-join views
-- Solo and team entry modes
+A live, porch-sized Halloween trivia game built for a four-hour drop-in event. Guests can play solo or as a team, answer from their phones, and compete across regular rounds and Dungeon Crawler Carl bonus floors.
+
+## Current version: Firebase-ready multiplayer test
+
+The current browser build includes:
+
+- Haunted porch display, host controls, and player views
+- Anonymous Firebase sign-in
+- Shared room code `CARL26`
+- Live solo and team entry
+- Synchronized questions, timers, answers, and scores
 - Unified round and all-night leaderboards
 - Six categories with five difficulty levels
-- A selectable game board
-- A 30-second question timer
-- Answer reveal and host-controlled scoring
-- A Dungeon Crawler Carl bonus-floor question
+- Host-controlled answer reveal and scoring
+- Dungeon Crawler Carl bonus-floor treatment
 - New-round, board-reset, and clear-player controls
 - Event open/closed status
-- A host-controlled event-address safeguard
+- A host-only event-address safeguard
 
-## Run locally
+## First live test
 
-Open `index.html` in a modern browser. No installation or build step is required.
+1. Open the live game link above on the host computer.
+2. Hard refresh the page.
+3. Confirm the badge says **Live room CARL26**.
+4. Open **Host Controls** and select **Claim Host Controls**.
+5. Open the same link on a phone and join as a player or team.
+6. Launch a question and confirm it appears on the phone automatically.
 
 ## Privacy design
 
-This project is intended for a home-hosted event. The event address is deliberately **not committed to this public repository**. In the prototype, the host enters the address manually and controls whether it appears on public screens. In the synchronized production version, address visibility will remain off by default and will use protected event configuration rather than public source code.
-
-## Prototype limitation
-
-Phase 1 keeps all game state inside one browser tab. It demonstrates the flow, controls, scoring, and visual direction, but separate phones are not synchronized yet.
-
-## Planned production routes
-
-- `/display` — television or projector game board
-- `/host` — private host dashboard
-- `/play` — guest join and answer screen
-
-Firebase Realtime Database is planned for shared rooms, live question state, answer locking, timers, scoring, late joining, moderation, reconnect support, and rolling leaderboards.
+This project is intended for a home-hosted event. The event address is deliberately **not committed to this public repository**. The host enters it manually, and public visibility remains off by default. The private address is stored in a host-only Firebase path and removed from the public path whenever visibility is disabled.
 
 ## Project structure
 
-- `index.html` — Phase 1 interactive prototype
-- `questions.sample.json` — proposed question-bank schema
-- `docs/ROADMAP.md` — development phases and priorities
-- `SECURITY.md` — privacy and home-address handling rules
+- `index.html` — haunted game interface
+- `app-live.js` — Firebase multiplayer engine
+- `questions-live.js` — live question bank
+- `firebase-config.js` — Firebase web project configuration
+- `database.rules.json` — Realtime Database security rules
+- `FIREBASE_SETUP.md` — Firebase setup and host recovery guide
+- `SECURITY.md` — privacy and address-handling rules
 
 ## Status
 
-Active development for Trick or Trivia 2026.
+Active multiplayer testing for Trick or Trivia 2026.
