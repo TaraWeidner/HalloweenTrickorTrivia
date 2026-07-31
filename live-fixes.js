@@ -2,3 +2,4 @@ import "./live-fixes-v2.js";
 import "./round-bank-sync.js";
 import "./guest-flow.js";
 import "./dungeon-closed.js";
+import "./safe-break-reveal.js";
