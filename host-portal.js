@@ -10,6 +10,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 import { firebaseConfig, DEFAULT_ROOM_CODE } from "./firebase-config.js";
 
+const HOST_BUILD = "14";
 const $ = id => document.getElementById(id);
 const normalizeRoomCode = value => String(value || "")
   .toUpperCase()
@@ -106,7 +107,7 @@ async function openHostPortal() {
     sessionStorage.setItem("trickOrTriviaHostKeyHash", keyHash);
 
     const frame = $("hostFrame");
-    frame.src = `./?room=${encodeURIComponent(roomCode)}&hostPortal=1#host`;
+    frame.src = `./?room=${encodeURIComponent(roomCode)}&hostPortal=1&build=${HOST_BUILD}#host`;
     frame.hidden = false;
     $("portalGate").hidden = true;
     $("portalShell").classList.add("unlocked");
