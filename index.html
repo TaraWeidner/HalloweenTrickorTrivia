@@ -147,6 +147,10 @@
             <div><strong>Dungeon is open</strong><span>Controls the public event status.</span></div>
             <label class="toggle"><input id="eventOpen" type="checkbox" checked aria-label="Dungeon is open" /><span></span></label>
           </div>
+          <div id="quizmasterBreakRow" class="switch-row">
+            <div><strong>Quizmaster break screen</strong><span>Temporarily pauses play without closing the dungeon.</span></div>
+            <label class="toggle"><input id="quizmasterBreak" type="checkbox" aria-label="Quizmaster break screen" /><span></span></label>
+          </div>
           <div class="switch-row">
             <div><strong>Show event address</strong><span>Off by default. Enable only during event hours.</span></div>
             <label class="toggle"><input id="showAddress" type="checkbox" aria-label="Show event address" /><span></span></label>
@@ -257,7 +261,7 @@
         </div>
         <div id="timerWrap" class="timer-wrap">
           <span>Time remaining</span>
-          <strong id="timer" class="timer">30</strong>
+          <strong id="timer" class="timer">15</strong>
         </div>
       </div>
 
@@ -281,6 +285,7 @@
     </div>
   </dialog>
 
-  <script type="module" src="app-live.js"></script>
+  <script type="module" src="app-live.js?v=12"></script>
+  <script type="module" src="game-night-controls.js?v=12"></script>
 </body>
 </html>
