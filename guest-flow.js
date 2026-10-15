@@ -9,8 +9,7 @@ const roomCode = normalizeRoomCode(
 );
 const requestedHostPortal = params.get("hostPortal") === "1";
 const storedPortalRoom = sessionStorage.getItem("trickOrTriviaHostPortal");
-const storedKeyHash = sessionStorage.getItem("trickOrTriviaHostKeyHash") || "";
-const hasHostPortalSession = storedPortalRoom === roomCode && /^[a-f0-9]{64}$/i.test(storedKeyHash);
+const hasHostPortalSession = storedPortalRoom === roomCode;
 const isHostPortal = requestedHostPortal && hasHostPortalSession;
 
 function addExperienceStyles() {
