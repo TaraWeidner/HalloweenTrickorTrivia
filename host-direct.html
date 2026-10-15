@@ -29,24 +29,51 @@ iframe{display:block;width:100%;height:100vh;border:0;background:#08060c}[hidden
 <script type="module">
 import{initializeApp,getApps}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import{getAuth,onAuthStateChanged,signInAnonymously}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-import{getDatabase,onDisconnect,ref,set}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+import{getDatabase,onDisconnect,ref,set,update}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 import{firebaseConfig,DEFAULT_ROOM_CODE}from"./firebase-config.js";
 const room=String(new URLSearchParams(location.search).get("room")||localStorage.getItem("trickOrTriviaRoom")||DEFAULT_ROOM_CODE).toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8)||DEFAULT_ROOM_CODE;
 const status=document.getElementById("status"),frame=document.getElementById("hostFrame"),loading=document.getElementById("loading");
-let opened=false;
+let opened=false,db=null;
 function fail(msg){status.textContent=msg;status.classList.add("error")}
 async function openHost(user){
  if(opened||!user)return;opened=true;
- const app=getApps()[0]||initializeApp(firebaseConfig),db=getDatabase(app),hostRef=ref(db,"rooms/"+room+"/hostUid");
+ const app=getApps()[0]||initializeApp(firebaseConfig);db=getDatabase(app);const hostRef=ref(db,"rooms/"+room+"/hostUid");
  try{
   localStorage.setItem("trickOrTriviaRoom",room);
   sessionStorage.setItem("trickOrTriviaHostPortal",room);
   sessionStorage.removeItem("trickOrTriviaHostKeyHash");
   await set(hostRef,user.uid);
   try{await onDisconnect(hostRef).remove()}catch{}
-  frame.src="./?room="+encodeURIComponent(room)+"&hostPortal=1&build=direct3#host";
+  frame.src="./?room="+encodeURIComponent(room)+"&hostPortal=1&build=direct4#host";
+  frame.addEventListener("load",installResetButton,{once:false});
   frame.hidden=false;loading.hidden=true;
  }catch(e){opened=false;console.error(e);fail("Firebase is still enforcing the old host-key rules. Publish the updated Realtime Database rules, then reload this page.")}
+}
+async function resetGameNight(){
+ if(!db)return;
+ if(!window.confirm("Reset Game Night? This will permanently clear all players, scores, submitted answers, and used questions, and reset the round to 1."))return;
+ await update(ref(db),{
+  ["rooms/"+room+"/public/round"]:1,
+  ["rooms/"+room+"/players"]:null,
+  ["rooms/"+room+"/answers"]:null,
+  ["rooms/"+room+"/used"]:null,
+  ["rooms/"+room+"/game"]:{phase:"board"}
+ });
+}
+function installResetButton(){
+ try{
+  const doc=frame.contentDocument;
+  if(!doc||doc.getElementById("resetGameNight"))return;
+  const clear=doc.getElementById("clearPlayers");
+  if(!clear)return;
+  const btn=doc.createElement("button");
+  btn.id="resetGameNight";
+  btn.type="button";
+  btn.className="button secondary";
+  btn.textContent="Reset Game Night";
+  btn.addEventListener("click",()=>resetGameNight().catch(e=>{console.error(e);alert("Reset failed: "+(e?.message||"Unknown error"));}));
+  clear.insertAdjacentElement("afterend",btn);
+ }catch(e){console.error("Could not add Reset Game Night control:",e)}
 }
 const app=getApps()[0]||initializeApp(firebaseConfig),auth=getAuth(app);
 onAuthStateChanged(auth,u=>{if(u)openHost(u)});
