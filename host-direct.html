@@ -44,35 +44,53 @@ async function openHost(user){
   sessionStorage.removeItem("trickOrTriviaHostKeyHash");
   await set(hostRef,user.uid);
   try{await onDisconnect(hostRef).remove()}catch{}
-  frame.src="./?room="+encodeURIComponent(room)+"&hostPortal=1&build=direct4#host";
+  frame.src="./?room="+encodeURIComponent(room)+"&hostPortal=1&build=direct5#host";
   frame.addEventListener("load",installResetButton,{once:false});
   frame.hidden=false;loading.hidden=true;
  }catch(e){opened=false;console.error(e);fail("Firebase is still enforcing the old host-key rules. Publish the updated Realtime Database rules, then reload this page.")}
 }
-async function resetGameNight(){
- if(!db)return;
+async function resetGameNight(btn){
+ if(!db){alert("The host connection is not ready yet.");return}
  if(!window.confirm("Reset Game Night? This will permanently clear all players, scores, submitted answers, and used questions, and reset the round to 1."))return;
- await update(ref(db),{
-  ["rooms/"+room+"/public/round"]:1,
-  ["rooms/"+room+"/players"]:null,
-  ["rooms/"+room+"/answers"]:null,
-  ["rooms/"+room+"/used"]:null,
-  ["rooms/"+room+"/game"]:{phase:"board"}
- });
+ const oldText=btn.textContent;
+ btn.disabled=true;
+ btn.textContent="Resetting Game Night…";
+ try{
+  await update(ref(db),{
+   ["rooms/"+room+"/public/round"]:1,
+   ["rooms/"+room+"/players"]:null,
+   ["rooms/"+room+"/answers"]:null,
+   ["rooms/"+room+"/used"]:null,
+   ["rooms/"+room+"/game"]:{phase:"board"}
+  });
+  btn.textContent="Game Night Reset ✓";
+  setTimeout(()=>{btn.textContent="Reset Game Night";btn.disabled=false},1800);
+ }catch(e){
+  console.error(e);
+  btn.textContent="Reset Failed";
+  btn.disabled=false;
+  alert("Reset failed: "+(e?.message||"Unknown error")+"\n\nIf this says PERMISSION_DENIED, publish the updated Firebase Realtime Database rules and try again.");
+  setTimeout(()=>{btn.textContent=oldText},1800);
+ }
 }
 function installResetButton(){
  try{
   const doc=frame.contentDocument;
-  if(!doc||doc.getElementById("resetGameNight"))return;
+  if(!doc)return;
   const clear=doc.getElementById("clearPlayers");
   if(!clear)return;
-  const btn=doc.createElement("button");
+  const existing=doc.getElementById("resetGameNight");
+  const btn=existing?existing.cloneNode(true):doc.createElement("button");
   btn.id="resetGameNight";
   btn.type="button";
   btn.className="button secondary";
   btn.textContent="Reset Game Night";
-  btn.addEventListener("click",()=>resetGameNight().catch(e=>{console.error(e);alert("Reset failed: "+(e?.message||"Unknown error"));}));
-  clear.insertAdjacentElement("afterend",btn);
+  if(existing)existing.replaceWith(btn);else clear.insertAdjacentElement("afterend",btn);
+  btn.addEventListener("click",e=>{
+   e.preventDefault();
+   e.stopImmediatePropagation();
+   resetGameNight(btn);
+  },true);
  }catch(e){console.error("Could not add Reset Game Night control:",e)}
 }
 const app=getApps()[0]||initializeApp(firebaseConfig),auth=getAuth(app);
