@@ -259,7 +259,7 @@ function resetJoinedCard() {
 }
 
 function updateRoleUI() {
-  const hostControls = ["eventOpen", "showAddress", "addressInput", "hoursInput", "newRound", "hostBonus", "resetBoard", "clearPlayers"];
+  const hostControls = ["eventOpen", "showAddress", "addressInput", "hoursInput", "newRound", "hostBonus", "resetBoard", "clearPlayers", "resetGameNight"];
   hostControls.forEach(id => {
     $(id).disabled = state.live && !state.isHost;
     $(id).classList.toggle("live-locked", state.live && !state.isHost);
@@ -701,6 +701,40 @@ async function clearPlayers() {
   });
 }
 
+async function resetGameNight() {
+  const confirmed = window.confirm(
+    "Reset Game Night? This will permanently clear all players, scores, submitted answers, and used questions, and reset the round to 1."
+  );
+  if (!confirmed) return;
+
+  clearInterval(state.timerId);
+
+  if (!state.live) {
+    state.localPlayers = [];
+    state.activePlayerId = null;
+    state.localUsed.clear();
+    state.localRound = 1;
+    state.localGame = { phase: "board" };
+    state.current = null;
+    state.selectedAnswer = null;
+    renderPlayers();
+    renderBoard();
+    renderSettings();
+    if ($("questionDialog").open) $("questionDialog").close();
+    return;
+  }
+
+  if (!state.isHost) return;
+
+  await update(ref(db), {
+    [roomPath("public/round")]: 1,
+    [roomPath("players")]: null,
+    [roomPath("answers")]: null,
+    [roomPath("used")]: null,
+    [roomPath("game")]: { phase: "board" }
+  });
+}
+
 async function connectRoom(roomCode) {
   state.roomCode = normalizeRoomCode(roomCode);
   localStorage.setItem("trickOrTriviaRoom", state.roomCode);
@@ -902,6 +936,7 @@ function bindInterface() {
   $("newRound").addEventListener("click", () => startNewRound().catch(handleFirebaseError));
   $("resetBoard").addEventListener("click", () => resetBoard().catch(handleFirebaseError));
   $("clearPlayers").addEventListener("click", () => clearPlayers().catch(handleFirebaseError));
+  $("resetGameNight").addEventListener("click", () => resetGameNight().catch(handleFirebaseError));
   $("displayBonus").addEventListener("click", () => startQuestion({ ...bonus, key: null, isBonus: true }));
   $("hostBonus").addEventListener("click", () => startQuestion({ ...bonus, key: null, isBonus: true }));
   $("revealAnswer").addEventListener("click", () => revealAnswer().catch(handleFirebaseError));
