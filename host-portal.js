@@ -1,16 +1,9 @@
 import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-import {
-  getDatabase,
-  get,
-  ref,
-  remove,
-  runTransaction,
-  set
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+import { getDatabase, onDisconnect, ref, set } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 import { firebaseConfig, DEFAULT_ROOM_CODE } from "./firebase-config.js";
 
-const HOST_BUILD = "14";
+const HOST_BUILD = "15";
 const $ = id => document.getElementById(id);
 const normalizeRoomCode = value => String(value || "")
   .toUpperCase()
@@ -19,146 +12,67 @@ const normalizeRoomCode = value => String(value || "")
 
 let auth;
 let db;
-let uid = null;
-let currentHostUid = null;
+let opened = false;
 
-function roomPath(roomCode, suffix = "") {
-  return `rooms/${roomCode}${suffix ? `/${suffix}` : ""}`;
-}
-
-function setStatus(message, mode = "") {
+function setStatus(message, error = false) {
   const status = $("portalStatus");
   status.textContent = message;
-  status.dataset.mode = mode;
+  status.classList.toggle("error", error);
 }
 
-function getRoomCode() {
-  return normalizeRoomCode($("portalRoom").value);
-}
+async function openHostPortal(user) {
+  if (opened || !user) return;
+  opened = true;
 
-async function sha256(value) {
-  const bytes = new TextEncoder().encode(value);
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
-}
+  const params = new URLSearchParams(window.location.search);
+  const roomCode = normalizeRoomCode(params.get("room") || localStorage.getItem("trickOrTriviaRoom") || DEFAULT_ROOM_CODE);
+  localStorage.setItem("trickOrTriviaRoom", roomCode);
+  sessionStorage.setItem("trickOrTriviaHostPortal", roomCode);
+  sessionStorage.removeItem("trickOrTriviaHostKeyHash");
 
-async function refreshHostState(roomCode) {
-  const snapshot = await get(ref(db, roomPath(roomCode, "hostUid")));
-  currentHostUid = snapshot.val() || null;
+  setStatus(`Claiming host controls for room ${roomCode}…`);
 
-  if (currentHostUid === uid) {
-    setStatus("This browser currently holds the host role. Enter a private key to secure it, then open the controls.", "ready");
-    $("unlockHost").textContent = "Save Host Key & Open Controls";
-  } else if (!currentHostUid) {
-    setStatus("No host currently holds this room. Enter a new private key to complete secure setup.", "ready");
-    $("unlockHost").textContent = "Secure Room & Open Controls";
-  } else {
-    setStatus("This room is secured. Enter the private host key to open the control booth.", "ready");
-    $("unlockHost").textContent = "Unlock Host Controls";
-  }
-}
-
-async function openHostPortal() {
-  const roomCode = getRoomCode();
-  const key = $("portalKey").value;
-
-  if (!uid) {
-    setStatus("The séance is still connecting. Give it one moment and try again.", "error");
-    return;
-  }
-  if (key.length < 12) {
-    setStatus("Use a private host key with at least 12 characters. A short PIN is too easy for the dungeon to guess.", "error");
-    return;
-  }
-
-  $("unlockHost").disabled = true;
-  setStatus("The dungeon is verifying your host key…", "working");
-
-  const keyHash = await sha256(key);
-  const hostUidRef = ref(db, roomPath(roomCode, "hostUid"));
-  const hostSecurityRef = ref(db, roomPath(roomCode, "hostSecurity/keyHash"));
-  const claimRef = ref(db, roomPath(roomCode, `hostClaims/${uid}`));
-  const sessionRef = ref(db, roomPath(roomCode, `hostSessions/${uid}`));
+  const hostRef = ref(db, `rooms/${roomCode}/hostUid`);
 
   try {
-    const hostSnapshot = await get(hostUidRef);
-    currentHostUid = hostSnapshot.val() || null;
+    // Keyless host mode: the private host page becomes the credential.
+    // Opening it explicitly transfers the room's host role to this browser.
+    await set(hostRef, user.uid);
 
-    // The current host may establish or rotate the secret. If the room has no
-    // host and no secret yet, this also performs the one-time secure bootstrap.
-    if (!currentHostUid || currentHostUid === uid) {
-      try {
-        await set(hostSecurityRef, keyHash);
-      } catch (error) {
-        // When a secret already exists and no host currently holds the room,
-        // Firebase correctly blocks replacement. Continue and test the key.
-        if (currentHostUid === uid) throw error;
-      }
+    // Prevent a closed/crashed browser from leaving a stale host lock behind.
+    try {
+      await onDisconnect(hostRef).remove();
+    } catch (disconnectError) {
+      console.warn("Could not register automatic host release:", disconnectError);
     }
-
-    await set(claimRef, keyHash);
-    await set(sessionRef, true);
-    await remove(claimRef);
-
-    const claim = await runTransaction(hostUidRef, current => current || uid);
-    const claimedUid = claim.snapshot.val();
-
-    sessionStorage.setItem("trickOrTriviaHostPortal", roomCode);
-    sessionStorage.setItem("trickOrTriviaHostKeyHash", keyHash);
 
     const frame = $("hostFrame");
     frame.src = `./?room=${encodeURIComponent(roomCode)}&hostPortal=1&build=${HOST_BUILD}#host`;
     frame.hidden = false;
-    $("portalGate").hidden = true;
-    $("portalShell").classList.add("unlocked");
-
-    if (claimedUid === uid) {
-      setStatus("Host controls unlocked. Keep this page private.", "success");
-    } else {
-      setStatus("Host key accepted. Another device currently holds the room; release it there before claiming this one.", "success");
-    }
+    $("loadingGate").hidden = true;
   } catch (error) {
+    opened = false;
     console.error(error);
-    const permissionDenied = String(error?.code || error?.message || "").toLowerCase().includes("permission");
     setStatus(
-      permissionDenied
-        ? "That host key was not accepted, or the secure Firebase rules have not been published yet."
-        : `The host portal could not open: ${error?.message || "Unknown Firebase error"}`,
-      "error"
+      "The host page is ready, but Firebase is still using the old host-key rules. Publish the updated database rules once, then reload this page.",
+      true
     );
-  } finally {
-    $("unlockHost").disabled = false;
   }
 }
 
 async function initializePortal() {
-  const params = new URLSearchParams(window.location.search);
-  $("portalRoom").value = normalizeRoomCode(params.get("room") || localStorage.getItem("trickOrTriviaRoom") || DEFAULT_ROOM_CODE);
-
   const app = getApps()[0] || initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getDatabase(app);
 
-  onAuthStateChanged(auth, async user => {
-    if (!user) return;
-    uid = user.uid;
-    await refreshHostState(getRoomCode());
+  onAuthStateChanged(auth, user => {
+    if (user) openHostPortal(user);
   });
 
   if (!auth.currentUser) await signInAnonymously(auth);
-
-  $("portalRoom").addEventListener("change", async event => {
-    event.target.value = normalizeRoomCode(event.target.value);
-    localStorage.setItem("trickOrTriviaRoom", event.target.value);
-    if (uid) await refreshHostState(event.target.value);
-  });
-  $("portalKey").addEventListener("keydown", event => {
-    if (event.key === "Enter") openHostPortal();
-  });
-  $("unlockHost").addEventListener("click", openHostPortal);
 }
 
 initializePortal().catch(error => {
   console.error(error);
-  setStatus(`The host portal could not connect: ${error?.message || "Unknown error"}`, "error");
+  setStatus(`The host portal could not connect: ${error?.message || "Unknown error"}`, true);
 });
