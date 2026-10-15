@@ -44,7 +44,7 @@ async function openHost(user){
   sessionStorage.removeItem("trickOrTriviaHostKeyHash");
   await set(hostRef,user.uid);
   try{await onDisconnect(hostRef).remove()}catch{}
-  frame.src="./?room="+encodeURIComponent(room)+"&hostPortal=1&build=direct2#host";
+  frame.src="./?room="+encodeURIComponent(room)+"&hostPortal=1&build=direct3#host";
   frame.hidden=false;loading.hidden=true;
  }catch(e){opened=false;console.error(e);fail("Firebase is still enforcing the old host-key rules. Publish the updated Realtime Database rules, then reload this page.")}
 }
