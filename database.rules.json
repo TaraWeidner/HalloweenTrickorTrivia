@@ -142,7 +142,8 @@
             "$other": {
               ".validate": false
             }
-          }
+          },
+          ".write": "auth != null && auth.uid === root.child('rooms').child($room).child('hostUid').val()"
         },
         "answers": {
           "$instance": {
@@ -161,7 +162,8 @@
                 ".validate": false
               }
             }
-          }
+          },
+          ".write": "auth != null && auth.uid === root.child('rooms').child($room).child('hostUid').val()"
         },
         "$other": {
           ".validate": false
