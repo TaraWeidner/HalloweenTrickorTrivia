@@ -265,7 +265,7 @@ function updateRoleUI() {
     $(id).classList.toggle("live-locked", state.live && !state.isHost);
   });
 
-  $("claimHost").classList.toggle("hidden", !state.live || state.isHost || Boolean(state.hostUid));
+  $("claimHost").classList.toggle("hidden", !state.live || state.isHost);
   $("releaseHost").classList.toggle("hidden", !state.live || !state.isHost);
 
   if (!state.live) {
@@ -604,8 +604,7 @@ async function joinGame() {
 
 async function claimHost() {
   if (!state.live || !state.uid) return;
-  const result = await runTransaction(ref(db, roomPath("hostUid")), current => current || state.uid);
-  if (!result.committed || result.snapshot.val() !== state.uid) return;
+  await set(ref(db, roomPath("hostUid")), state.uid);
   await initializeRoomDefaults();
 }
 
